@@ -1,0 +1,7 @@
+bundle/
+build/
+dist/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-mock/
+frontend/tests/screens/

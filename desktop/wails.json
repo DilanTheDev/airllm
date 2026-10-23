@@ -1,0 +1,18 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "AirLLM",
+  "outputfilename": "AirLLM",
+  "frontend:install": "npm install --no-audit --no-fund",
+  "frontend:build": "npm run build",
+  "frontend:dir": "./frontend",
+  "author": {
+    "name": "AirLLM contributors"
+  },
+  "info": {
+    "companyName": "AirLLM",
+    "productName": "AirLLM",
+    "productVersion": "1.0.0",
+    "copyright": "Apache License 2.0",
+    "comments": "Run and fine-tune huge language models on a small GPU"
+  }
+}
