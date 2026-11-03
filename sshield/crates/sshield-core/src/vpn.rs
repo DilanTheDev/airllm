@@ -81,6 +81,11 @@ pub fn find_interface(name: &str) -> Option<Binding> {
     b
 }
 
+/// Name of this OS's loopback interface (`lo`, `lo0`, "Loopback Pseudo-Interface 1", ...).
+pub fn loopback_interface() -> Option<String> {
+    if_addrs::get_if_addrs().ok()?.into_iter().find(|i| i.is_loopback()).map(|i| i.name)
+}
+
 /// Interface name the policy expects (explicit, or WireGuard config stem).
 pub fn expected_interface(p: &VpnPolicy) -> Option<String> {
     if !p.interface.trim().is_empty() {
@@ -268,7 +273,7 @@ pub fn parse_proc_net_route(table: &str, dest: std::net::Ipv4Addr) -> Option<Str
 /// Ask the OS which interface it would use to reach `dest`.
 pub async fn lookup_route(dest: IpAddr) -> Result<String, String> {
     if dest.is_loopback() {
-        return Ok(if cfg!(target_os = "linux") { "lo".into() } else { "lo0".into() });
+        return loopback_interface().ok_or_else(|| "no loopback interface found".to_string());
     }
     #[cfg(target_os = "linux")]
     {
@@ -498,11 +503,6 @@ mod tests {
     }
 
     fn lo_binding() -> Binding {
-        for n in ["lo", "lo0"] {
-            if let Some(b) = find_interface(n) {
-                return b;
-            }
-        }
-        panic!("no loopback interface");
+        find_interface(&loopback_interface().expect("loopback interface")).expect("loopback is up")
     }
 }

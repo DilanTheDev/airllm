@@ -372,7 +372,7 @@ async fn vpn_policy_is_enforced_end_to_end() {
     assert!(matches!(r, Err(SshError::Vpn(_))), "{:?}", r.err());
 
     // "tunnel" = loopback, which really carries traffic to 127.0.0.1
-    down.interface = if cfg!(target_os = "linux") { "lo".into() } else { "lo0".into() };
+    down.interface = sshield_core::vpn::loopback_interface().expect("loopback interface");
     let c = connector(Ui::new(true, None), &kh, Some(down)).connect(&h, &[]).await.expect("via pinned socket");
     assert_eq!(String::from_utf8_lossy(&exec(&c, "x").await.unwrap().stdout), "ran:x");
 }
